@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -38,10 +38,6 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-
-/**
- * Default email sending implementation
- */
 public class HTMLEmailSendingModule extends AbstractEmailSendingModule {
 
     public static final String CONF_STRING = "confirmation";
@@ -50,14 +46,14 @@ public class HTMLEmailSendingModule extends AbstractEmailSendingModule {
     private BlockingQueue<Notification> notificationQueue = new LinkedBlockingDeque<Notification>();
 
     /**
-     * Replace the {user-parameters} in the config file with the respective
-     * values
+     * Replace the {user-parameters} in the config file with the respective values.
      *
      * @param text           the initial text
      * @param userParameters mapping of the key and its value
      * @return the final text to be sent in the email
      */
     public static String replacePlaceHolders(String text, Map<String, String> userParameters) {
+
         if (userParameters != null) {
             for (Map.Entry<String, String> entry : userParameters.entrySet()) {
                 String key = entry.getKey();
@@ -71,27 +67,35 @@ public class HTMLEmailSendingModule extends AbstractEmailSendingModule {
 
     @Override
     public void sendEmail() {
+
         try {
             Notification notification = notificationQueue.take();
             ConfigurationContext configContext = CarbonConfigurationContextFactory
                     .getConfigurationContext();
             TransportOutDescription transportOutDescription = null;
             if (configContext != null) {
-                transportOutDescription = configContext.getAxisConfiguration().getTransportOut(EmailConstants.MAIL_TO);
-            } else {
-
+                transportOutDescription =
+                        configContext.getAxisConfiguration().getTransportOut(EmailConstants.MAIL_TO);
             }
 
-            String smtpHost = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_HOST).getValue().toString();
-            String smtpPort = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_PORT).getValue().toString();
-            String smtpStarttls = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_STARTTLS).getValue().toString();
-            String smtpAuth = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_AUTH).getValue().toString();
-            final String smtpUser = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_USER).getValue().toString();
-            final String smtpPassword = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_PASSWORD).getValue().toString();
-            String smtpFrom = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_FROM).getValue().toString();
+            String smtpHost =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_HOST).getValue().toString();
+            String smtpPort =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_PORT).getValue().toString();
+            String smtpStarttls =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_STARTTLS).getValue().toString();
+            String smtpAuth =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_AUTH).getValue().toString();
+            final String smtpUser = transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_USER).getValue()
+                    .toString();
+            final String smtpPassword =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_PASSWORD).getValue().toString();
+            String smtpFrom =
+                    transportOutDescription.getParameter(EmailConstants.MAIL_SMTP_FROM).getValue().toString();
             String contentType;
             if (transportOutDescription.getParameter(EmailConstants.MAIL_CONTENT_TYPE) != null) {
-                contentType = transportOutDescription.getParameter(EmailConstants.MAIL_CONTENT_TYPE).getValue().toString();
+                contentType =
+                        transportOutDescription.getParameter(EmailConstants.MAIL_CONTENT_TYPE).getValue().toString();
             } else {
                 contentType = "text/plain";
             }
@@ -131,13 +135,12 @@ public class HTMLEmailSendingModule extends AbstractEmailSendingModule {
         } catch (InterruptedException e) {
             log.error("Interrupted while waiting until an element becomes available in the notification queue.", e);
         } catch (AddressException e) {
-            e.printStackTrace();
+            log.error("Error occurred while parsing the send to email address to:", e);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            log.error("Error occurred while setting parameters to the mime message" + e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
-
     }
 
     public String getRequestMessage(EmailConfig emailConfig) {
@@ -148,7 +151,6 @@ public class HTMLEmailSendingModule extends AbstractEmailSendingModule {
             msg = new StringBuilder(EmailConfig.DEFAULT_VALUE_MESSAGE);
             msg.append("\n");
             if (notificationData.getNotificationCode() != null) {
-
                 msg.append(targetEpr).append("?").append(CONF_STRING).append(notificationData
                         .getNotificationCode()).append("\n");
             }

@@ -48,7 +48,6 @@
     </dependencies>
 
     <repositories>
-
         <repository>
             <id>wso2-nexus</id>
             <name>WSO2 internal Repository</name>
@@ -59,7 +58,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
             <id>wso2.releases</id>
             <name>WSO2 internal Repository</name>
@@ -70,7 +68,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
             <id>wso2.snapshots</id>
             <name>Apache Snapshot Repository</name>
@@ -83,7 +80,6 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-
     </repositories>
 
     <properties>

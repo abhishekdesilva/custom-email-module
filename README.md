@@ -1,2 +1,2 @@
-# custom-email-module
-This handles the HTML content rendering part for the WSO2 API Manager
+# HOW TO ACTIVATE
+Please refer https://medium.com/@abhishekdesilva/how-to-send-notification-emails-with-html-content-for-wso2-api-manager-b1608c277057
